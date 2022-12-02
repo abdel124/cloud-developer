@@ -61,7 +61,7 @@ const Axios = require('axios');
     
     await downloadImage(uri,filename);
     filterImageFromURL(filename);
-    return res.status(200).send("filtrer");
+    return res.status(200).send("success");
     deleteLocalFiles('src/util/tmp/');
 
   });
