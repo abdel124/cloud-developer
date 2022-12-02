@@ -1,6 +1,14 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import {filterImageFromURL, deleteLocalFiles} from './util/util';
+import {filterImageFromURL, deleteLocalFiles , outpath} from './util/util';
+const {resolve} = require('path');
+import { fstat } from 'fs';
+
+
+const fs = require('fs');
+const Axios = require('axios');
+
+
 
 (async () => {
 
@@ -33,9 +41,45 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   
   // Root Endpoint
   // Displays a simple message to the user
+
+  app.get("/filteredimage", async ( req, res ) => {
+    let uri : string = req.query.image_url;
+    const filename: string = "unfiltred.jpeg";
+    async function downloadImage(url: string, filepath: string) {
+    const response = await Axios({
+          url,
+          method: 'GET',
+          responseType: 'stream'
+      });
+      
+      return new Promise((resolve, reject) => {
+        try {
+          response.data.pipe(fs.createWriteStream(filepath))
+              .on('error', reject)
+              .once('close', () => resolve(filepath));
+        } catch (error) {
+              console.log(error);
+              reject(error);
+        }
+      });
+  }
+    deleteLocalFiles('src/util/tmp/');
+    await downloadImage(uri,filename);
+    await filterImageFromURL(filename);
+    const absolutePath = resolve("src/util/"+outpath);
+    console.log(absolutePath);
+    return res.status(200).sendFile(absolutePath);
+
+  });
+
+
   app.get( "/", async ( req, res ) => {
-    res.send("try GET /filteredimage?image_url={{}}")
+  
+    res.send("try GET /filteredimage?image_url={{}}");
+     
   } );
+
+
   
 
   // Start the Server

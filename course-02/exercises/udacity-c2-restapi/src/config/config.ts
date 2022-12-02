@@ -1,16 +1,16 @@
 export const config = {
   "dev": {
-    "username": "udagramabdeldev",
-    "password": "Boulitor129?",
-    "database": "udagramabdeldev-1",
-    "host": "udagramabdeldev-1.c19snt1qbg9i.us-east-1.rds.amazonaws.com",
+    "username": process.env.POSTGRESS_USERNAME,
+    "password": process.env.PASSOWRD,
+    "database": process.env.DATABASE,
+    "host": process.env.POSTGRESS_HOST,
     "dialect": "postgres",
-    "aws_region": "us-east-1",
-    "aws_profile": "default",
-    "aws_media_bucket": "udagram-abdel-bucket-dev"
+    "aws_region": process.env.AWS_REGION,
+    "aws_profile": process.env.AWS_PROFILE,
+    "aws_media_bucket": process.env.AWS_MEDIA_BUCKET, 
   },
   "jwt": {
-    "secret": " "
+    "secret": "Hello worlds"
   },
   "prod": {
     "username": "",
