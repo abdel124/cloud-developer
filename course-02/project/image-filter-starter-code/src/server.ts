@@ -2,12 +2,12 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles , outpath} from './util/util';
 import { resolve } from 'path';
-import { fstat } from 'fs';
+import { fstat, PathLike } from 'fs';
 
 
 import fs from 'fs';
 import Axios from 'axios';
-const absolutePath  = resolve("src/util/"+outpath);
+const absolutePath : PathLike  = resolve("src/util/"+outpath);
 
 
 
@@ -52,7 +52,7 @@ const absolutePath  = resolve("src/util/"+outpath);
   } );
 
   app.get("/filteredimage", async ( req, res ) => {
-    let uri : any = req.query.image_url;
+    let uri : string = req.query.image_url;
     const filename: string = "unfiltred.jpeg";
     async function downloadImage(url: string, filepath: string) {
     const response = await Axios({
