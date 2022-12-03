@@ -1,12 +1,13 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles , outpath} from './util/util';
-const {resolve} = require('path');
+import { resolve } from 'path';
 import { fstat } from 'fs';
 
 
-const fs = require('fs');
-const Axios = require('axios');
+import fs from 'fs';
+import Axios from 'axios';
+const absolutePath  = resolve("src/util/"+outpath);
 
 
 
@@ -42,8 +43,16 @@ const Axios = require('axios');
   // Root Endpoint
   // Displays a simple message to the user
 
+
+
+  app.get( "/", async ( req, res ) => {
+  
+    res.send("try GET /filteredimage?image_url={{}}");
+     
+  } );
+
   app.get("/filteredimage", async ( req, res ) => {
-    let uri : string = req.query.image_url;
+    let uri : any = req.query.image_url;
     const filename: string = "unfiltred.jpeg";
     async function downloadImage(url: string, filepath: string) {
     const response = await Axios({
@@ -63,23 +72,33 @@ const Axios = require('axios');
         }
       });
   }
-    deleteLocalFiles('src/util/tmp/');
+    deleteLocalFiles('src/util/tmp/')
     await downloadImage(uri,filename);
     await filterImageFromURL(filename);
-    const absolutePath = resolve("src/util/"+outpath);
-    console.log(absolutePath);
-    return res.status(200).sendFile(absolutePath);
+    var contentType = "image/jpeg";
+    fs.exists(absolutePath, function (exists: any) {
+      if (!exists) {
+          res.writeHead(404, {
+              "Content-Type": "text/plain" });
+          res.end("404 Not Found");
+          return;
+      }
+      var contentType = "image/jpeg";
+      
+      // Setting the headers
+      res.writeHead(200, {
+          "Content-Type": contentType });
 
+      // Reading the file
+      fs.readFile(absolutePath,
+          function (err, content) {
+              // Serving the image
+              res.end(content);
+          });
   });
-
-
-  app.get( "/", async ( req, res ) => {
-  
-    res.send("try GET /filteredimage?image_url={{}}");
-     
-  } );
-
-
+    return res.status(200)
+    
+  });
   
 
   // Start the Server
