@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles , outpath} from './util/util';
 import { resolve } from 'path';
@@ -6,7 +6,7 @@ import { fstat, PathLike } from 'fs';
 
 
 import fs from 'fs';
-import Axios from 'axios';
+import Axios, { responseEncoding } from 'axios';
 const absolutePath : PathLike  = resolve("src/util/"+outpath);
 
 
@@ -51,7 +51,7 @@ const absolutePath : PathLike  = resolve("src/util/"+outpath);
      
   } );
 
-  app.get("/filteredimage", async ( req, res ) => {
+  app.get("/filteredimage", async ( req:Request, res:Response ) => {
     let uri : string = req.query.image_url;
     const filename: string = "unfiltred.jpeg";
     async function downloadImage(url: string, filepath: string) {
@@ -61,7 +61,7 @@ const absolutePath : PathLike  = resolve("src/util/"+outpath);
           responseType: 'stream'
       });
       
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve:any, reject:any) => {
         try {
           response.data.pipe(fs.createWriteStream(filepath))
               .on('error', reject)
@@ -75,7 +75,6 @@ const absolutePath : PathLike  = resolve("src/util/"+outpath);
     deleteLocalFiles('src/util/tmp/')
     await downloadImage(uri,filename);
     await filterImageFromURL(filename);
-    var contentType = "image/jpeg";
     fs.exists(absolutePath, function (exists: any) {
       if (!exists) {
           res.writeHead(404, {
@@ -83,7 +82,7 @@ const absolutePath : PathLike  = resolve("src/util/"+outpath);
           res.end("404 Not Found");
           return;
       }
-      var contentType = "image/jpeg";
+      var contentType: string = "image/jpeg";
       
       // Setting the headers
       res.writeHead(200, {
@@ -91,7 +90,7 @@ const absolutePath : PathLike  = resolve("src/util/"+outpath);
 
       // Reading the file
       fs.readFile(absolutePath,
-          function (err, content) {
+          function (err:any, content:any) {
               // Serving the image
               res.end(content);
           });
