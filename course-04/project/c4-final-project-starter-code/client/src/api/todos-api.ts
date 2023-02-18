@@ -10,7 +10,7 @@ export async function getTodos(idToken: string): Promise<Todo[]> {
   const response = await Axios.get(`${apiEndpoint}/todos`, {
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${idToken}`
+      'authorizationtoken':`${idToken}`
     },
   })
   console.log('Todos:', response.data)
@@ -24,7 +24,7 @@ export async function createTodo(
   const response = await Axios.post(`${apiEndpoint}/todos`,  JSON.stringify(newTodo), {
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${idToken}`
+      'authorizationtoken': `${idToken}`
     }
   })
   return response.data.item
@@ -35,10 +35,11 @@ export async function patchTodo(
   todoId: string,
   updatedTodo: UpdateTodoRequest
 ): Promise<void> {
+  console.log(idToken)
   await Axios.patch(`${apiEndpoint}/todos/${todoId}`, JSON.stringify(updatedTodo), {
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${idToken}`
+      'Authorization': `${idToken}`
     }
   })
 }
@@ -47,12 +48,16 @@ export async function deleteTodo(
   idToken: string,
   todoId: string
 ): Promise<void> {
-  await Axios.delete(`${apiEndpoint}/todos/${todoId}`, {
+  await Axios.delete(`${apiEndpoint}/todos/${todoId}`, 
+  {
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${idToken}`
+      'Content-Type':'application/json',
+      'authorizationToken':`${idToken}`
     }
+  }).catch(error => {
+    console.log("Something went wrong", error)
   })
+
 }
 
 export async function getUploadUrl(
@@ -62,7 +67,7 @@ export async function getUploadUrl(
   const response = await Axios.post(`${apiEndpoint}/todos/${todoId}/attachment`, '', {
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${idToken}`
+      'authorizationToken': `${idToken}`
     }
   })
   return response.data.uploadUrl
