@@ -51,10 +51,9 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
         name: this.state.newTodoName,
         dueDate,
       })
-      setTimeout(() => {  console.log("World!"); }, 5000);
-      console.log(newTodo)
+      const allTodos = await getTodos(this.props.auth.getIdToken())
       this.setState({
-        todos: [...this.state.todos, newTodo],
+        todos: allTodos,
         newTodoName: ''
       })
     } catch {

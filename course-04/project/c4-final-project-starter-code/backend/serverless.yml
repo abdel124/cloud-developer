@@ -104,16 +104,17 @@ functions:
           method: post
           authorizer: Auth
           path: todos
-          origin: '*'
-          headers:
-              - Content-Type
-              - X-Amz-Date
-              - authorizationtoken
-              - X-Api-Key
-              - authorization
-              - X-Amz-Security-Token
-              - X-Amz-User-Agent
-              - X-Amzn-Trace-Id
+          cors: 
+            origin: '*'
+            headers:
+                - Content-Type
+                - X-Amz-Date
+                - authorizationtoken
+                - X-Api-Key
+                - authorization
+                - X-Amz-Security-Token
+                - X-Amz-User-Agent
+                - X-Amzn-Trace-Id
           request:
             schemas:
               application/json: ${file(models/create-todo-model.json)}
@@ -134,6 +135,16 @@ functions:
           authorizer: Auth
           path: todos/{todoId}
           cors: true
+          origin: '*'
+          headers:
+              - Content-Type
+              - X-Amz-Date
+              - authorizationtoken
+              - X-Api-Key
+              - authorization
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - X-Amzn-Trace-Id
           request:
             schemas:
               application/json: ${file(models/update-todo-model.json)}
@@ -141,12 +152,16 @@ functions:
       - Effect: Allow
         Action:
           - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+          - dynamodb:PutItem
         Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/*"
       - Effect: Allow
         Action:
           - dynamodb:PutItem
           - dynamodb:UpdateItem
           - dynamodb:GetItem
+          - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
 
   # TODO: Configure this function

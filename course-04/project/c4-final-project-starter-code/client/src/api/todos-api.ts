@@ -38,8 +38,8 @@ export async function patchTodo(
   console.log(idToken)
   await Axios.patch(`${apiEndpoint}/todos/${todoId}`, JSON.stringify(updatedTodo), {
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `${idToken}`
+      'Content-Type':'application/json',
+      'authorizationtoken':`${idToken}`
     }
   })
 }
