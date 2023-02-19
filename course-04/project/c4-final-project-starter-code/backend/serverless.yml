@@ -151,17 +151,11 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
-          - dynamodb:Query
-          - dynamodb:GetItem
           - dynamodb:UpdateItem
-          - dynamodb:PutItem
         Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/*"
       - Effect: Allow
         Action:
-          - dynamodb:PutItem
           - dynamodb:UpdateItem
-          - dynamodb:GetItem
-          - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
 
   # TODO: Configure this function
@@ -220,7 +214,13 @@ functions:
       - Effect: Allow
         Action:
           - dynamodb:Query
+          - dynamodb:UpdateItem
         Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/*"
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:UpdateItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
       - Effect: Allow
         Action:
           - s3:PutObject

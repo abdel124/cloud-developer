@@ -14,6 +14,19 @@ export const handler = middy(
     // TODO: Implement creating a new TODO item
     const userid = parseUserId(event.headers.authorizationtoken)
     logger.info(userid)
+    if (newTodo.name.trim() == ''){
+    return {
+      statusCode: 400,
+      headers: {
+        'Access-Control-Allow-Origin':'*',
+        'Access-Control-Allow-Credentials': true,
+      },
+      body: JSON.stringify({
+        error:'invalid request name not defined'
+      })
+    }
+    }
+
     const newItem = await createTodoItem(newTodo,userid)
 
     return {

@@ -4,7 +4,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import * as middy from 'middy'
 import { cors, httpErrorHandler } from 'middy/middlewares'
 import { getUploadUrl  } from '../../helpers/attachmentUtils'
-import { getTodosById } from '../../helpers/todos'
+import { getTodosById, updateUrl } from '../../helpers/todos'
 
 export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -21,6 +21,7 @@ export const handler = middy(
       }
     }
     const url = getUploadUrl(todoId)
+    await updateUrl(todoId)
   
     return {
       statusCode: 201,

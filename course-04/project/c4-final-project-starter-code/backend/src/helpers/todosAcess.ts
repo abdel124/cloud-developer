@@ -14,6 +14,7 @@ export class TodosAccess {
       XAWS = AWSXRay.captureAWS(AWS),
       private readonly docClient: AWS.DynamoDB.DocumentClient = new XAWS.DynamoDB.DocumentClient(),
       private readonly todosTable = process.env.TODOS_TABLE,
+      private readonly bucketName = process.env.ATTACHMENT_S3_BUCKET,
       private readonly indexUserID = process.env.INDEX_USER_ID) {
     }
 
@@ -69,6 +70,25 @@ export class TodosAccess {
           }).promise()
           
           return updated.Attributes as TodoItem
+        }
+
+    async updateUrl(todoid: string): Promise<string> {
+            logger.info(todoid)
+            await this.docClient.update({
+            TableName: this.todosTable,
+            Key: { 'todoId': todoid },
+            UpdateExpression: 'set #attachmentUrl = :attachmentUrl',
+            ExpressionAttributeNames: {
+              '#attachmentUrl': 'attachmentUrl'
+            },
+            ExpressionAttributeValues: {
+              ':attachmentUrl': `http://${this.bucketName}.s3.amazonaws.com/${todoid}.png`,
+            },
+            
+            //ReturnValues: 'ALL_NEW'
+          }).promise()
+          
+          return "success"
         }
 
     async deleteTodoItem(todoId: string) {
